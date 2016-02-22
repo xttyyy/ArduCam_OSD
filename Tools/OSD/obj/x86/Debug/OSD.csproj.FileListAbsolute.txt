@@ -1,0 +1,16 @@
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\bin\Debug\OSD_Config.exe.config
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\bin\Debug\vlcsnap-2012-01-28-07h46m04s95.png
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\bin\Debug\OSD_Config.exe.manifest
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\bin\Debug\OSD_Config.application
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\bin\Debug\OSD_Config.exe
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\bin\Debug\OSD_Config.pdb
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD.csprojResolveAssemblyReference.cache
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD.AboutBox1.resources
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD.OSD.resources
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD.Properties.Resources.resources
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD.csproj.GenerateResource.Cache
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD_Config.TrustInfo.xml
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD_Config.exe.manifest
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD_Config.application
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD_Config.exe
+C:\Users\xty\Documents\GitHub\ArduCam_OSD\Tools\OSD\obj\x86\Debug\OSD_Config.pdb

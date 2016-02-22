@@ -1,5 +1,3 @@
-// memoryFree header
-
 #ifndef	MEMORY_FREE_H
 #define MEMORY_FREE_H
 
@@ -7,11 +5,11 @@
 extern "C" {
 #endif
 
-int freeMem();
+int freeMemory();
 
 #ifdef  __cplusplus
 }
 #endif
 
 #endif
- 
+

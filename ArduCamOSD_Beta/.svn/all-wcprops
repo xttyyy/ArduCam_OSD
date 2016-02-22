@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/244/trunk/ArduCamOSD_Beta
+END
+Spi.h
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/156/trunk/ArduCamOSD_Beta/Spi.h
+END
+pseventparser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/156/trunk/ArduCamOSD_Beta/pseventparser.cpp
+END
+ArduCamOSD_Beta.pde
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/242/trunk/ArduCamOSD_Beta/ArduCamOSD_Beta.pde
+END
+OSD_Vars.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/243/trunk/ArduCamOSD_Beta/OSD_Vars.h
+END
+pseventparser.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/156/trunk/ArduCamOSD_Beta/pseventparser.h
+END
+ptpobjinfoparser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/156/trunk/ArduCamOSD_Beta/ptpobjinfoparser.cpp
+END
+ArduCam_Max7456.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/244/trunk/ArduCamOSD_Beta/ArduCam_Max7456.cpp
+END
+Spi.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/156/trunk/ArduCamOSD_Beta/Spi.cpp
+END
+ArduCam_Max7456.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/241/trunk/ArduCamOSD_Beta/ArduCam_Max7456.h
+END
+ptpobjinfoparser.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/156/trunk/ArduCamOSD_Beta/ptpobjinfoparser.h
+END
+OSD_Panels.pde
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/243/trunk/ArduCamOSD_Beta/OSD_Panels.pde
+END

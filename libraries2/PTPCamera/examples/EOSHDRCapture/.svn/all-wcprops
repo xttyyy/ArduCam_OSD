@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/EOSHDRCapture
+END
+hdrcapture.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/EOSHDRCapture/hdrcapture.h
+END
+EOSHDRCapture.pde
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/EOSHDRCapture/EOSHDRCapture.pde
+END
+hdrcapture.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/EOSHDRCapture/hdrcapture.cpp
+END
+expcomp_macro.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/EOSHDRCapture/expcomp_macro.h
+END

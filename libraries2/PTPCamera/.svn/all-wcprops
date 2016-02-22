@@ -1,0 +1,155 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/300/trunk/libraries/PTPCamera
+END
+gpl2.txt
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/gpl2.txt
+END
+canonps.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/canonps.cpp
+END
+simplefifo.h
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/simplefifo.h
+END
+ptp.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptp.cpp
+END
+copying.txt
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/copying.txt
+END
+canoneos.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/canoneos.cpp
+END
+canonps.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/canonps.h
+END
+ptp.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptp.h
+END
+ptpmsgstr.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpmsgstr.h
+END
+psvaluetitles.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/psvaluetitles.h
+END
+ptpdpparser.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpdpparser.h
+END
+canoneos.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/canoneos.h
+END
+ptpdebug.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpdebug.cpp
+END
+mtpconst.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/mtpconst.h
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/README
+END
+valuelist.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/valuelist.h
+END
+eosvaluetitles.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/eosvaluetitles.h
+END
+scheduler.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/scheduler.cpp
+END
+ptpdebug.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpdebug.h
+END
+ptpconst.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpconst.h
+END
+ptpcallback.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpcallback.cpp
+END
+scheduler.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/scheduler.h
+END
+ptpcallback.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/ptpcallback.h
+END
+simpletimer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/simpletimer.cpp
+END
+simpletimer.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/simpletimer.h
+END

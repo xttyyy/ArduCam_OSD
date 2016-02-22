@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture
+END
+ptpobjinfoparser.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture/ptpobjinfoparser.h
+END
+PSCapture.pde
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture/PSCapture.pde
+END
+sample_output.txt
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture/sample_output.txt
+END
+pseventparser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture/pseventparser.cpp
+END
+pseventparser.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture/pseventparser.h
+END
+ptpobjinfoparser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/300/trunk/libraries/PTPCamera/examples/PSCapture/ptpobjinfoparser.cpp
+END

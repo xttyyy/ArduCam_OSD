@@ -20,15 +20,19 @@ static int16_t      chan1_raw = 0;
 static int16_t      chan2_raw = 0;
 static int16_t      chan1_raw_middle = 0;
 static int16_t      chan2_raw_middle = 0;
-static uint8_t      ch_toggle = 0;
-static boolean      osd_set = 0;
-static boolean      switch_mode = 0;
+//static uint8_t      ch_toggle = 0;
+//static boolean      osd_set = 0;
+//static boolean      switch_mode = 0;
 
-static int8_t       setup_menu = 0;
+static int16_t      chan3_raw = 0;
+static int16_t      chan4_raw = 0;
+
+
+//static int8_t       setup_menu = 0;
 static float        converts = 0;
 static float        converth = 0;
-static uint8_t      overspeed = 0;
-static uint8_t      stall = 0;
+//static uint8_t      overspeed = 0;
+//static uint8_t      stall = 0;
 static uint8_t      battv = 0;                //Battery warning voltage - units Volt *10 
 //static int        battp = 0;
 
@@ -53,9 +57,9 @@ static unsigned long warning_timer =0;
 static uint8_t      warning_type = 0;
 static uint8_t      last_warning = 0;
 static uint8_t      warning = 0;
-static uint8_t      osd_off_switch = 0;
-static uint8_t      osd_switch_last = 100;
-static unsigned long         osd_switch_time = 0;
+//static uint8_t      osd_off_switch = 0;
+//static uint8_t      osd_switch_last = 100;
+//static unsigned long         osd_switch_time = 0;
 static unsigned long         descendt = 0;
 static unsigned long         palt = 0;
 static float        osd_climb = 0;
@@ -93,7 +97,7 @@ static float        osd_groundspeed = 0;            // ground speed
 static uint16_t     osd_throttle = 0;               // throtle
 
 //Call sign variables
-static char         char_call[OSD_CALL_SIGN_TOTAL+1] = {0};
+//static char         char_call[OSD_CALL_SIGN_TOTAL+1] = {0};
 
 //MAVLink session control
 static boolean      mavbeat = 0;
@@ -104,72 +108,84 @@ static uint8_t      apm_mav_system;
 static uint8_t      apm_mav_component;
 static boolean      enable_mav_request = 0;
 
-static const uint8_t npanels = 2;
-static uint8_t panel = 0; 
+
+//static uint8_t panel = 0; 
 // Panel BIT registers
-byte panA_REG[npanels] = {0b00000000};
-byte panB_REG[npanels] = {0b00000000};
-byte panC_REG[npanels] = {0b00000000};
-byte panD_REG[npanels] = {0b00000000};
+byte panA_REG = {0b00000000};
+byte panB_REG = {0b00000000};
+byte panC_REG = {0b00000000};
+byte panD_REG = {0b00000000};
 
 byte modeScreen = 0; //NTSC:0, PAL:1
 
 // First 8 panels and their X,Y coordinate holders
-byte panCenter_XY[2][npanels]; // = { 13,7,0 };
-byte panPitch_XY[2][npanels]; // = { 11,1 };
-byte panRoll_XY[2][npanels]; // = { 23,7 };
-byte panBatt_A_XY[2][npanels]; // = { 23,1 };
+byte panCenter_XY[2]; // = { 13,7,0 };
+byte panPitch_XY[2]; // = { 11,1 };
+byte panRoll_XY[2]; // = { 23,7 };
+byte panBatt_A_XY[2]; // = { 23,1 };
 //byte panBatt_B_XY[2]; // = { 23,3 };
-byte panGPSats_XY[2][npanels]; // = { 2,12 };
-byte panGPL_XY[2][npanels]; // = { 2,11 };
-byte panGPS_XY[2][npanels]; // = { 2,13 };
-byte panBatteryPercent_XY[2][npanels];
+byte panGPSats_XY[2]; // = { 2,12 };
+byte panGPL_XY[2]; // = { 2,11 };
+byte panGPS_XY[2]; // = { 2,13 };
+byte panBatteryPercent_XY[2];
 
 
 //Second 8 set of panels and their X,Y coordinate holders
-byte panRose_XY[2][npanels]; // = { 16,13 };
-byte panHeading_XY[2][npanels]; // = { 16,12 };
-byte panMavBeat_XY[2][npanels]; // = { 2,10 };
-byte panHomeDir_XY[2][npanels]; // = { 0,0 };
-byte panHomeDis_XY[2][npanels]; // = { 0,0 };
-byte panWPDir_XY[2][npanels]; // = { 27,12 };
-byte panWPDis_XY[2][npanels]; // = { 23,11 };
-byte panTime_XY[2][npanels];
+byte panRose_XY[2]; // = { 16,13 };
+byte panHeading_XY[2]; // = { 16,12 };
+byte panMavBeat_XY[2]; // = { 2,10 };
+byte panHomeDir_XY[2]; // = { 0,0 };
+byte panHomeDis_XY[2]; // = { 0,0 };
+byte panWPDir_XY[2]; // = { 27,12 };
+byte panWPDis_XY[2]; // = { 23,11 };
+byte panTime_XY[2];
 
 
 // Third set of panels and their X,Y coordinate holders
-byte panCur_A_XY[2][npanels]; // = { 23,1 };
+byte panCur_A_XY[2]; // = { 23,1 };
 //byte panCur_B_XY[2]; // = { 23,3 };
-byte panAlt_XY[2][npanels]; // = { 0,0 };
-byte panHomeAlt_XY[2][npanels]; // = { 0,0 };
-byte panVel_XY[2][npanels]; // = { 0,0 };
-byte panAirSpeed_XY[2][npanels]; // = { 0,0 };
-byte panThr_XY[2][npanels]; // = { 0,0 };
-byte panFMod_XY[2][npanels]; // = { 0,0 };
-byte panHorizon_XY[2][npanels]; // = {8,centercalc}
+byte panAlt_XY[2]; // = { 0,0 };
+byte panHomeAlt_XY[2]; // = { 0,0 };
+byte panVel_XY[2]; // = { 0,0 };
+byte panAirSpeed_XY[2]; // = { 0,0 };
+byte panThr_XY[2]; // = { 0,0 };
+byte panFMod_XY[2]; // = { 0,0 };
+byte panHorizon_XY[2]; // = {8,centercalc}
 
 // Third set of panels and their X,Y coordinate holders
-byte panWarn_XY[2][npanels];
+byte panWarn_XY[2];
 //byte panOff_XY[2];
-byte panWindSpeed_XY[2][npanels];
-byte panClimb_XY[2][npanels];
-byte panTune_XY[2][npanels];
-byte panEff_XY[2][npanels];
-byte panRSSI_XY[2][npanels];
-byte panCALLSIGN_XY[2][npanels];
+byte panWindSpeed_XY[2];
+byte panClimb_XY[2];
+byte panTune_XY[2];
+byte panEff_XY[2];
+byte panRSSI_XY[2];
+byte panCALLSIGN_XY[2];
 
 //*************************************************************************************************************
 //rssi varables
-static uint8_t      rssipersent = 0;
-static uint8_t      rssical = 0;
+//static uint8_t      rssipersent = 0;
+//static uint8_t      rssical = 0;
 static uint8_t      osd_rssi = 0; //raw value from mavlink
-static int16_t      rssi = -99; // scaled value 0-100%
-static bool         rssiraw_on = false; // 0- display scale value | 1- display raw value
-static uint8_t      rssi_warn_level = 0;
+//static int16_t      rssi = -99; // scaled value 0-100%
+//static bool         rssiraw_on = false; // 0- display scale value | 1- display raw value
+//static uint8_t      rssi_warn_level = 0;
 
-static uint16_t     ch_raw = 0;
+//static uint16_t     ch_raw = 0;
 static uint16_t     osd_chan5_raw = 1000;
 static uint16_t     osd_chan6_raw = 1000;
 static uint16_t     osd_chan7_raw = 1000;
 static uint16_t     osd_chan8_raw = 1000;
+
+//***************************************************************************************************************
+//osd configure
+static int8_t c_get_channel = 0;
+static int8_t c_chan1_rev = 1;
+static int8_t c_chan2_rev = 1;
+static int16_t c_chan1_middle = 10000;
+static int16_t c_chan2_middle = 10000;
+
+static uint8_t c_configuring = 0;
+static uint8_t c_getchan1middle = 0;
+static uint8_t c_getchan2middle = 0;
 

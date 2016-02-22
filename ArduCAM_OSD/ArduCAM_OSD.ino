@@ -9,7 +9,7 @@ Author(s): Sandro Benigno
 Coauthor(s):
 Jani Hirvinen   (All the EEPROM routines)
 Michael Oborne  (OSD Configutator)
-Zóltan Gábor, Pedro Santos and MinimOSD-Extra Team (Extra OSD Tools/Panels)
+Z贸ltan G谩bor, Pedro Santos and MinimOSD-Extra Team (Extra OSD Tools/Panels)
 Mike Smith      (BetterStream and Fast Serial libraries)
 Special Contribuitor:
 Andrew Tridgell by all the support on MAVLink
@@ -50,7 +50,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 
 //#define membug 
 //#define FORCEINIT  // You should never use this unless you know what you are doing 
-
 
 // AVR Includes
 #include <FastSerial.h>
@@ -94,7 +93,6 @@ FastSerialPort0(Serial);
 OSD osd; //OSD object 
 
 SimpleTimer  mavlinkTimer;
-
 
 /* **********************************************/
 /* ***************** SETUP() *******************/
@@ -142,8 +140,8 @@ void setup()
 
     // Get correct panel settings from EEPROM
     readSettings();
-    for(panel = 0; panel < npanels; panel++) readPanelSettings();
-    panel = 0; //set panel to 0 to start in the first navigation screen
+    readPanelSettings();
+    //panel = 0; //set panel to 0 to start in the first navigation screen
     // Show bootloader bar
     loadBar();
 
@@ -153,6 +151,7 @@ void setup()
     // House cleaning, clear display and enable timers
     osd.clear();
     mavlinkTimer.Enable();
+
 
 } // END of setup();
 
@@ -183,6 +182,8 @@ void loop()
         lastMAVBeat = millis();//Preventing error from delay sensing
     }
 
+
+	
     read_mavlink();
     mavlinkTimer.Run();
 }
@@ -197,11 +198,143 @@ void OnMavlinkTimer()
     //osd_battery_pic_B = setBatteryPic(osd_battery_remaining_B);     // battery B remmaning picture
 
     setHomeVars(osd);   // calculate and set Distance from home and Direction to home
-    
+
     writePanels();       // writing enabled panels (check OSD_Panels Tab)
 }
 
 
+//char* mmmm = "asdfasdfsadfdsafasdfasfsadfaskdjfksadjflkajsdfkljsadkfljasdf|asdfasdfasdf|asdfasdfasdf|asdfasdfasdf|asdfasdfsdafasdfasdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+unsigned long c_last_chan1_move_time = 0;
+char menuDeeps = -1;
+char rowDeeps = -1;
+char parrent = -1;
+int currentValue = 0;
+int newValue = 0;
+void onRCInput()
+{
+	
+	if (c_getchan1middle == 0 && c_chan1_middle == 10000 && chan1_raw>1200)
+	{
+		c_chan1_middle = chan1_raw;
+		c_getchan1middle = 1;
+		return;
+	}
+	if (c_getchan2middle == 0 && c_chan2_middle == 10000 && chan2_raw>1200)
+	{
+		c_chan2_middle = chan2_raw;
+		c_getchan2middle = 1;
+		return;
+	}
+	if (c_getchan1middle == 0 || c_getchan2middle == 0)
+		return;
+	if (c_configuring == 0)
+	{
+		if (chan1_raw - c_chan1_middle > 300 || c_chan1_middle - chan1_raw > 300)
+		{
+			unsigned long ms = millis();
+			if (c_last_chan1_move_time == 0)
+			{
+				c_last_chan1_move_time = ms;
+				return;
+			}
+			else if (ms - c_last_chan1_move_time >5000)
+			{
+				if (c_chan1_middle - chan1_raw > 300)
+					c_chan1_rev = -1;
+				parrent = -1;
+				c_configuring = 1;
+				osd.clear();
+				menuDeeps = 0;
+				rowDeeps = 0;
+				/*
+				c_last_chan1_move_time = 0;
+				menuDeeps = 0;
+				rowDeeps = 0;*/
+			}
+		}
+	}
+	else
+	{
+		int16_t xshift = (chan1_raw - c_chan1_middle)* c_chan1_rev;
+		if (xshift > 300)
+		{
+			menuDeeps++;
+			if (menuDeeps == 1)
+			{
+				parrent = rowDeeps;
+				osd.clear();
+				rowDeeps = 0;
+			}
+			else if (menuDeeps == 2)
+			{
+				////load(parrent,rowDeeps)
+				//currentValue = values[parrent][rowDeeps];
+				//newValue = currentValue;
+			}
+			else if (menuDeeps >= 3)
+			{
+				if (parrent!=-1)
+					newValue = currentValue;
+				menuDeeps = 2;
+			}
+		}
+		if (xshift < -300)
+		{
+			if (menuDeeps == 2)
+			{
+				//save(menuDeeps,rowDeeps)
+			}
+			if (menuDeeps == 1)
+			{
+				parrent = -1;
+				osd.clear();
+				rowDeeps = 0;
+			}
+			menuDeeps--;
+		}
+		
+		if (menuDeeps == -1)
+		{
+			menuDeeps = 0;
+			rowDeeps = 0;
+			c_configuring = 0;
+			osd.clear();
+		}
+
+
+		int16_t yshift = (chan2_raw - c_chan2_middle)* c_chan2_rev;
+		if (menuDeeps<2)
+		{
+			if (yshift > 300)
+			{
+				rowDeeps++;
+			}
+			if (yshift < -300)
+			{
+				rowDeeps--;
+			}
+			if (rowDeeps <= 0)
+			{
+				rowDeeps = 0;
+			}
+			if (rowDeeps >= 9)
+			{
+				rowDeeps = 9;
+			}
+		}
+		else
+		{
+			if (yshift > 300)
+			{
+				newValue -= 1;// minUnit[parrent][rowDeeps];
+			}
+			if (yshift < -300)
+			{
+				newValue += 1;// minUnit[parrent][rowDeeps];
+			}
+		}
+	}
+}
 void unplugSlaves(){
     //Unplug list of SPI
 #ifdef ArduCAM328

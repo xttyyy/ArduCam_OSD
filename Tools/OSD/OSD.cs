@@ -113,6 +113,8 @@ namespace OSD
 
             // setup all panel options
             setupFunctions(); //setup panel item box
+            initTree();
+
         }
 
         void changeToPal(bool pal)
@@ -1035,6 +1037,15 @@ namespace OSD
                 if(pan.callsign_str.Length < OSD_CALL_SIGN_TOTAL) 
                     for (int i = pan.callsign_str.Length; i < OSD_CALL_SIGN_TOTAL; i++) eeprom[OSD_CALL_SIGN_ADDR + i] = Convert.ToByte('\0');
             }
+            else if(current.Text=="Osd Menus")
+            {
+                SaveOsdMenu();
+                for(int i=0;i<661;i++)
+                {
+                    eeprom[osdmenusOffset + i] = osdmenubyte[i];
+                }
+
+            }
             ArduinoSTK sp;
 
             try
@@ -1105,6 +1116,21 @@ namespace OSD
                         if (spupload_flag) MessageBox.Show("Done writing configuration data!");
                         else MessageBox.Show("Failed to upload new configuration data");
                     } 
+                    else if(current.Text=="Osd Menus")
+                    {
+                        for (int i = 0; i < 10; i++)
+                        { //try to upload two times if it fail
+                            spupload_flag = sp.upload(eeprom, (short)osdmenusOffset, 661, (short)osdmenusOffset);
+                            if (!spupload_flag)
+                            {
+                                if (sp.keepalive()) Console.WriteLine("keepalive successful (iter " + i + ")");
+                                else Console.WriteLine("keepalive fail (iter " + i + ")");
+                            }
+                            else break;
+                        }
+                        if (spupload_flag) MessageBox.Show("Done writing configuration data!");
+                        else MessageBox.Show("Failed to upload new configuration data");
+                    }
                 }                 
                 catch (Exception ex) {
                     MessageBox.Show(ex.Message);
@@ -1404,6 +1430,10 @@ namespace OSD
 
         private void BUT_ReadOSD_Click(object sender, EventArgs e)
         {
+
+            
+
+
             toolStripProgressBar1.Style = ProgressBarStyle.Continuous;        
             this.toolStripStatusLabel1.Text = ""; 
 
@@ -1558,6 +1588,11 @@ namespace OSD
             this.nTSCToolStripMenuItem_CheckStateChanged(EventArgs.Empty, EventArgs.Empty);
             this.CHK_pal_CheckedChanged(EventArgs.Empty, EventArgs.Empty);
 
+            for (int i = 0; i < 661; i++)
+                osdmenubyte[i] = eeprom[osdmenusOffset + i];
+
+            LoadOsdMenu();
+
             osdDraw1();
             osdDraw2();
 
@@ -1710,6 +1745,16 @@ namespace OSD
                         sw.WriteLine("{0}\t{1}", "Call Sign", pan.callsign_str);
                         sw.Close();
                     }
+
+                    //osdMenu
+                        
+                    string menu = sfd.FileName.Replace(".osd", ".menu");
+                    FileStream fs = new FileStream(menu, FileMode.OpenOrCreate,FileAccess.ReadWrite );
+                    StreamWriter ssw = new StreamWriter(fs);
+                    ssw.BaseStream.Position = 0;
+                    string s = ASCIIEncoding.UTF8.GetString(osdmenubyte);
+                    ssw.WriteLine(s);
+                    ssw.Close();
                 }
                 catch
                 {
@@ -1838,6 +1883,24 @@ namespace OSD
                         this.pALToolStripMenuItem_CheckStateChanged(EventArgs.Empty, EventArgs.Empty);
                         this.nTSCToolStripMenuItem_CheckStateChanged(EventArgs.Empty, EventArgs.Empty);
 
+                        //osdMenu
+
+                        string menu = ofd.FileName.Replace(".osd", ".menu");
+                        FileStream fs = new FileStream(menu, FileMode.Open, FileAccess.Read);
+                        StreamReader ssw = new StreamReader(fs);
+                        string sdata = ssw.ReadToEnd();
+
+                        byte[] b = ASCIIEncoding.UTF8.GetBytes(sdata);
+
+                        if (b.Length >= osdmenubyte.Length)
+                        {
+                            for (int i = 0; i < osdmenubyte.Length; i++)
+                            {
+                                osdmenubyte[i] = b[i];
+                            }
+                            LoadOsdMenu();
+                        }
+                        //ssw.WriteLine(s);
                     }
                 }
                 catch
@@ -2452,5 +2515,251 @@ namespace OSD
             about.Show();
         }
 
+        private void initTree()
+        {
+            treeView1.Nodes.Clear();
+            treeView1.LabelEdit = true;
+            treeView1.AfterLabelEdit += treeView1_AfterLabelEdit;
+            
+            for (int i = 0; i < 6; i++)
+            {
+                TreeNode tn = new TreeNode("Group" + i.ToString());
+                tn.Tag = new int[] { i, 1 };
+                treeView1.Nodes.Add(tn);
+                
+            }
+
+
+            foreach (TreeNode groupn in treeView1.Nodes)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    TreeNode tn = new TreeNode("param" + i.ToString());
+                    tn.Tag = new int[] { i, 1};
+                    groupn.Nodes.Add(tn);
+                }
+            }
+
+            actionBox.Items.AddRange(new object[] { "a", "b", "c", "d", "e", "f" });
+        }
+
+        void treeView1_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            if (e.Label != null)
+            {
+                string t = e.Label;
+                if (t.Length > StringLength)
+                    t = t.Substring(0, StringLength);
+
+                e.Node.Text = t;
+            }
+        }
+        TreeNode _selectNode = null;
+
+        int osdmenusOffset = 220;
+        int osdmenusEnd = 880;
+        int StringLength = 8;
+
+        byte[] osdmenubyte = new byte[661];
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if(_selectNode!=null)
+            {
+                
+
+                int action =0;
+                int unit = 1;
+                if (int.TryParse(actionBox.Text, out action))
+                {
+                    if (int.TryParse(unitBox.Text, out unit))
+                    {
+                        _selectNode.Tag = new int[] { action, unit };
+                    }
+                }
+
+
+                _selectNode = null;
+            }
+            _selectNode = e.Node;
+
+            if (_selectNode.Tag != null)
+            {
+                int[] tagarray = (int[])_selectNode.Tag;
+                if (tagarray.Length == 2)
+                {
+                    int actionIdx = tagarray[0];
+                    int unit = tagarray[1];
+                    if (actionBox.Items != null && actionBox.Items.Count > actionIdx)
+                        actionBox.SelectedIndex = actionIdx;
+                    else
+                        actionBox.Text = actionIdx.ToString();
+
+                    unitBox.Text = unit.ToString();
+                }
+            }
+        }
+
+        private void btn_Remove_Click(object sender, EventArgs e)
+        {
+            if(_selectNode!=null)
+            {
+                if (_selectNode.Nodes != null)
+                    _selectNode.Nodes.Clear();
+                if (_selectNode.Parent != null)
+                    _selectNode.Remove();
+                else
+                    treeView1.Nodes.Remove(_selectNode);
+
+            }
+        }
+
+        private void btn_AddSub_Click(object sender, EventArgs e)
+        {
+            if(_selectNode.Parent==null)
+            {
+                TreeNode tn = new TreeNode("param" + _selectNode.Nodes.Count.ToString());
+                tn.Tag = new int[] { 0, 1 };
+                _selectNode.Nodes.Add(tn);
+            }
+            else
+            {
+                MessageBox.Show("Now only support 2 level menus,you can't add deeper tree! :(");
+            }
+        }
+
+        private void btn_AddGroup_Click(object sender, EventArgs e)
+        {
+            TreeNode tn = new TreeNode("group" + treeView1.Nodes.Count.ToString());
+            tn.Tag = new int[] { 0, 1 };
+            treeView1.Nodes.Add(tn);
+        }
+
+        int WriteInt(byte[] b ,int idx, int value)
+        {
+            b[idx] = (byte)value;
+            idx++;
+            return idx;
+        }
+
+        int ReadInt(byte[] b,int idx)
+        {
+            byte ret = b[idx];
+            return (int)ret;
+        }
+        int WriteString(byte[] b,int idx, string text)
+        {
+            int l = text.Length;
+
+            for(int n=0;n<StringLength;n++)
+            {
+                if(n<l)
+                {
+                    b[idx + n] = (byte)text.ToCharArray()[n];
+                }
+                else
+                {
+                    b[idx + n] = 0;
+                }
+            }
+            return (idx + StringLength);
+        }
+
+        string ReadString(byte[]b,int idx)
+        {
+            char[] str = new char[StringLength];
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < StringLength; i++)
+                sb.Append((char)b[idx + i]);
+
+            return sb.ToString();
+        }
+
+   
+        void LoadOsdMenu()
+        {
+            treeView1.Nodes.Clear();
+            byte[] tmpmenu = new byte[661];
+            for (int i = 0; i < 661; i++) tmpmenu[i] = osdmenubyte[i];
+            int start = 0;
+
+            int groupnum = ReadInt(tmpmenu, start);
+
+            int totalitem = 0;
+            for (int i = 0; i < groupnum; i++)
+            {
+                string groupname = ReadString(tmpmenu, start + 1 + groupnum + i * StringLength);
+                int subitemnum = ReadInt(tmpmenu, start + 1 +i);
+                TreeNode group = new TreeNode(groupname);
+
+                for (int j = 0; j < subitemnum; j++)
+                {
+                    string itemname = ReadString(tmpmenu, start + 1 + groupnum + groupnum * StringLength + totalitem * (StringLength + 2) + j * (StringLength+2));
+                    int action = ReadInt(tmpmenu, start + 1 + groupnum + groupnum * StringLength + totalitem * (StringLength + 2) + j * (StringLength + 2) + StringLength);
+                    int unit = ReadInt(tmpmenu, start + 1 + groupnum + groupnum * StringLength + totalitem * (StringLength + 2) + j * (StringLength + 2) + StringLength + 1);
+                    TreeNode tn = new TreeNode(itemname);
+                    tn.Tag = new int[] { action, unit };
+                    group.Nodes.Add(tn);
+                }
+
+                totalitem += subitemnum;
+                treeView1.Nodes.Add(group);
+            }
+        }
+
+        void SaveOsdMenu()
+        {
+            byte[] menuEep = new byte[1000];
+            int start = 0;
+
+            start = WriteInt(menuEep, start, treeView1.Nodes.Count);
+
+            for (int i = 0; i < treeView1.Nodes.Count; i++)
+            {
+                TreeNode tr = treeView1.Nodes[i];
+                int subnodesnum = tr.Nodes.Count;
+                start = WriteInt(menuEep, start, subnodesnum);
+            }
+
+            for (int i = 0; i < treeView1.Nodes.Count; i++)
+            {
+                start = WriteString(menuEep, start, treeView1.Nodes[i].Text);
+            }
+
+            foreach (TreeNode tn in treeView1.Nodes)
+            {
+                foreach (TreeNode subtn in tn.Nodes)
+                {
+                    start = WriteString(menuEep, start, subtn.Text);
+
+                    int action = 0;
+                    int unit = 1;
+                    if (subtn.Tag != null)
+                    {
+                        int[] tagarray = (int[])subtn.Tag;
+                        if (tagarray.Length == 2)
+                        {
+                            action = tagarray[0];
+                            unit = tagarray[1];
+
+                        }
+                        start = WriteInt(menuEep, start, action);
+                        start = WriteInt(menuEep, start, unit);
+                    }
+                }
+            }
+
+            if (start < osdmenubyte.Length)
+            {
+                for (int i = 0; i < 661; i++)
+                {
+                    osdmenubyte[i] = menuEep[i];
+                }
+            }
+            else
+            {
+                MessageBox.Show("data is out of 661 byte,can not save in eeprom! :(");
+            }
+        }
     }
 }

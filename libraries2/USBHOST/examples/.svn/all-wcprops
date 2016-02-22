@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/300/trunk/libraries/USBHOST/examples
+END
+LCDkbd.pde
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/300/trunk/libraries/USBHOST/examples/LCDkbd.pde
+END
+arm_mouse.pde
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/300/trunk/libraries/USBHOST/examples/arm_mouse.pde
+END
+PS3LCD.pde
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/300/trunk/libraries/USBHOST/examples/PS3LCD.pde
+END
+conf_descr_dump.pde
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/300/trunk/libraries/USBHOST/examples/conf_descr_dump.pde
+END
