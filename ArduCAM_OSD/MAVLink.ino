@@ -22,7 +22,21 @@ void request_mavlink_rates()
         mavlink_msg_request_data_stream_send(MAVLINK_COMM_0,
             apm_mav_system, apm_mav_component,
             MAVStreams[i], MAVRates[i], 1);
+
     }
+	for (int i = 0; i < maxStreams; i++) {
+		mavlink_msg_request_data_stream_send(MAVLINK_COMM_0,
+			apm_mav_system, apm_mav_component,
+			MAVStreams[i], MAVRates[i], 1);
+
+		/*Bitmask to indicate which dimensions should be ignored by the vehicle(a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored).
+		Mapping: bit 1 : x, bit 2 : y, bit 3 : z, bit 4 : vx, bit 5 : vy, bit 6 : vz, 
+				 bit 7 : ax, bit 8 : ay, bit 9 : az, bit 10 : is force setpoint, bit 11 : yaw, bit 12 : yaw rate.*/
+		mavlink_msg_set_position_target_local_ned_send(MAVLINK_COMM_0, 963497464, apm_mav_system, apm_mav_component,
+			MAV_FRAME_LOCAL_NED, 4088/*0b0000111111111000*/, -100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	}
+
+	
 }
 
 

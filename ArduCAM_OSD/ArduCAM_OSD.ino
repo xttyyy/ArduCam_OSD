@@ -331,6 +331,7 @@ void onRCInput()
 			if (yshift < -300)
 			{
 				newValue += 1;// minUnit[parrent][rowDeeps];
+				request_mavlink_rates();
 			}
 		}
 	}

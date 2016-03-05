@@ -424,6 +424,7 @@ enum MAV_SEVERITY
 #include "./mavlink_msg_named_value_float.h"
 #include "./mavlink_msg_named_value_int.h"
 #include "./mavlink_msg_statustext.h"
+#include "./mavlink_msg_set_position_target_local_ned.h"
 #include "./mavlink_msg_debug.h"
 
 #ifdef __cplusplus
