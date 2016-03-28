@@ -88,6 +88,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 #define TELEMETRY_SPEED  57600  // How fast our MAVLink telemetry is coming to Serial port
 #define BOOTTIME         2000   // Time in milliseconds that we show boot loading bar and wait user input
 
+#define M_PI      3.141592653589793f
+#define DEG_TO_RAD      (M_PI / 180.0f)
+#define LATLON_TO_M     111319.5f
+#define LATLON_TO_CM    11131950.0f
+
+
 // Objects and Serial definitions
 FastSerialPort0(Serial);
 OSD osd; //OSD object 
@@ -239,6 +245,7 @@ void onRCInput()
 			}
 			else if (ms - c_last_chan1_move_time >5000)
 			{
+				c_last_chan1_move_time = ms;
 				if (c_chan1_middle - chan1_raw > 300)
 					c_chan1_rev = -1;
 				parrent = -1;
@@ -252,6 +259,42 @@ void onRCInput()
 				rowDeeps = 0;*/
 			}
 		}
+
+		if (osd_chan8_raw > 1700)
+		{
+			if(gpslocked == 0)
+			{
+				gpslocked = 1;
+				DoMission(0);//mission
+			}
+		}
+		else
+		{
+			if (gpslocked == 1)
+			{
+				gpslocked = 0;
+			}
+		}
+
+		if (osd_chan7_raw > 1700)
+		{
+			if (gpsoffsetinit == 0)
+			{
+				gpsoffsetinit = 1;
+				latoffset = osd_lat - target_lat;
+				lonoffset = osd_lon - target_lon;
+			}
+		}
+		else
+		{
+			if (gpsoffsetinit == 1)
+			{
+				gpsoffsetinit = 0;
+				latoffset = 0;
+				lonoffset = 0;
+			}
+		}
+		
 	}
 	else
 	{
@@ -269,7 +312,7 @@ void onRCInput()
 			{
 				////load(parrent,rowDeeps)
 				//currentValue = values[parrent][rowDeeps];
-				//newValue = currentValue;
+				newValue = currentValue;
 			}
 			else if (menuDeeps >= 3)
 			{
@@ -282,12 +325,14 @@ void onRCInput()
 		{
 			if (menuDeeps == 2)
 			{
+				currentValue = newValue;
 				//save(menuDeeps,rowDeeps)
 			}
 			if (menuDeeps == 1)
 			{
 				parrent = -1;
 				osd.clear();
+				//SetCurrent(rowDeeps);
 				rowDeeps = 0;
 			}
 			menuDeeps--;
@@ -298,6 +343,7 @@ void onRCInput()
 			menuDeeps = 0;
 			rowDeeps = 0;
 			c_configuring = 0;
+			c_last_chan1_move_time = 0;
 			osd.clear();
 		}
 
@@ -327,12 +373,16 @@ void onRCInput()
 			if (yshift > 300)
 			{
 				newValue -= 1;// minUnit[parrent][rowDeeps];
+				
+				DoMission(rowDeeps);
 			}
 			if (yshift < -300)
 			{
 				newValue += 1;// minUnit[parrent][rowDeeps];
-				request_mavlink_rates();
+				DoMission(rowDeeps);
+				
 			}
+			
 		}
 	}
 }

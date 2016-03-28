@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F320B74B-8236-4C71-A852-82F4C7C32D6C}</ProjectGuid>
+    <RootNamespace>gpstracker</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>G:\Work\APM\ArduPilot-Arduino-1.0.3-gcc-4.8.2-windows\ArduPilot-Arduino-1.0.3-windows\hardware\arduino\cores\arduino;G:\Work\APM\ArduPilot-Arduino-1.0.3-gcc-4.8.2-windows\ArduPilot-Arduino-1.0.3-windows\hardware\arduino\variants\standard;F:\github\ArduCam_OSD\gpstracker;F:\github\ardupilot-ArduCopter-3.2.1\libraries\AP_Common;F:\github\ardupilot-ArduCopter-3.2.1\libraries\AP_Common\utility;F:\github\ardupilot-ArduCopter-3.2.1\libraries\AP_Math;F:\github\ardupilot-ArduCopter-3.2.1\libraries\AP_Math\utility;F:\github\ardupilot-ArduCopter-3.2.1\libraries\GCS_MAVLink;F:\github\ardupilot-ArduCopter-3.2.1\libraries\GCS_MAVLink\utility;G:\Work\APM\ArduPilot-Arduino-1.0.3-gcc-4.8.2-windows\ArduPilot-Arduino-1.0.3-windows\libraries\SoftwareSerial;G:\Work\APM\ArduPilot-Arduino-1.0.3-gcc-4.8.2-windows\ArduPilot-Arduino-1.0.3-windows\libraries\SoftwareSerial\utility;G:\Work\APM\ArduPilot-Arduino-1.0.3-gcc-4.8.2-windows\ArduPilot-Arduino-1.0.3-windows\libraries;G:\Work\APM\ArduPilot-Arduino-1.0.3-gcc-4.8.2-windows\ArduPilot-Arduino-1.0.3-windows\hardware\arduino\libraries;C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\f4vx3kbq.kt3\Micro Platforms\default\debuggers;F:\github\ardupilot-ArduCopter-3.2.1\libraries;g:\work\apm\ardupilot-arduino-1.0.3-gcc-4.8.2-windows\ardupilot-arduino-1.0.3-windows\hardware\tools\avr\avr\include\;g:\work\apm\ardupilot-arduino-1.0.3-gcc-4.8.2-windows\ardupilot-arduino-1.0.3-windows\hardware\tools\avr\avr\include\avr\;g:\work\apm\ardupilot-arduino-1.0.3-gcc-4.8.2-windows\ardupilot-arduino-1.0.3-windows\hardware\tools\avr\avr\;g:\work\apm\ardupilot-arduino-1.0.3-gcc-4.8.2-windows\ardupilot-arduino-1.0.3-windows\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>F:\github\ArduCam_OSD\gpstracker\__vm\.gpstracker.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;ARDUINO=166;ARDUINO_MAIN;__AVR__;__avr__;F_CPU=16000000L;__cplusplus=201103L;GCC_VERSION=40302;ARDUINO_ARCH_AVR;ARDUINO_AVR_PRO5V328;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="gpstracker.ino">
+      <FileType>CppCode</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.gpstracker.vsarduino.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

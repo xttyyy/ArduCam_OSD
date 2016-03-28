@@ -70,6 +70,22 @@ static float        osd_lon = 0;                    // longitude
 static uint8_t      osd_satellites_visible = 0;     // number of satelites
 static uint8_t      osd_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
 
+
+static float       target_lat = 0;                    // latidude
+static float        target_lon = 0;                    // longitude
+static float        target_alt = 0;                    // longitude
+static uint8_t      target_satellites_visible = 0;     // number of satelites
+static uint8_t      gpslocked = 0;   //gpslocked
+
+static float latoffset = 0;
+static float lonoffset = 0;
+static uint8_t      gpsoffsetinit = 0;   //gpslocked
+
+static float scaleLongDown = 1.0f;
+static int scaleLongDownCaled = 0;
+static uint32_t    distance = 0;
+
+static uint8_t ack = 100;
 static uint8_t      osd_got_home = 0;               // tels if got home position or not
 static float        osd_home_lat = 0;               // home latidude
 static float        osd_home_lon = 0;               // home longitude

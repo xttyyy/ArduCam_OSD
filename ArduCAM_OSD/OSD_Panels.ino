@@ -22,7 +22,7 @@ void writePanels(){
 	
 	if (millis() < (lastMAVBeat + 2200))
 	{
-
+    
 		
 		if (c_configuring == 1)
 		{
@@ -35,6 +35,7 @@ void writePanels(){
 		}
 		else
 		{
+			//osd.clear();
 			
 			//if (ISd( Warn_BIT)) panWarn(panWarn_XY[0], panWarn_XY[1]); // this must be here so warnings are always checked
 			//Testing bits from 8 bit register A 
@@ -83,8 +84,11 @@ void writePanels(){
 			if (ISd( RSSI_BIT)) panRSSI(panRSSI_XY[0], panRSSI_XY[1]); //??x??
 			//if(ISd(panel,Eff_BIT)) panEff(panEff_XY[0], panEff_XY[1]);
 			//if (ISd( CALLSIGN_BIT)) panCALLSIGN(panCALLSIGN_XY[0], panCALLSIGN_XY[1]);
+
 			
+			panProgress();
 		}
+   
 		//panConfigure();
 	}
 	else { // if no mavlink update for 2 secs
@@ -239,7 +243,69 @@ void panCALLSIGN(int first_col, int first_line){
 //    }
 //    osd.closePanel();
 //}
+int desalt = 0;
+void panProgress()
+{
+	
+	desalt++;
+	if (desalt >= 100)
+		desalt = 0;
+	/*
+	unsigned long ms = millis();
+	if (ms > text_timer)
+	{*/
+		//osd.clear();
 
+		//text_timer = ms + 100;
+		//osd.printf("%c%11.6f|%c%11.6f", 0x83, (double)osd_lat, 0x84, (double)osd_lon);
+
+		osd.setPanel(1, 1);
+		osd.openPanel();
+		osd.printf("%c%c%3.6f| %c%3.6f |l%d,o%d", 0xbc, 0x84, target_lon, 0x83, target_lat,gpslocked,gpsoffsetinit);  //waiting target
+		osd.closePanel();
+
+		osd.setPanel(1, 4);
+		osd.openPanel();
+		osd.printf("%cFinish", 0xbd);   //takeoff
+		osd.closePanel();
+
+		osd.setPanel(1, 5);
+		osd.openPanel();
+		osd.printf("%c%d/%d", 0xbe, desalt , 100);  //climbing
+		osd.closePanel();
+
+		osd.setPanel(1, 6);
+		osd.openPanel();
+		osd.printf("%c%d/%d", 0xcb,100,distance);  //moving
+		osd.closePanel();
+
+		//osd.setPanel(1, 7);
+		//osd.openPanel();
+		//osd.printf("%cWaiting", 0xcd);  //return
+		//osd.closePanel();
+
+		//osd.setPanel(1, 8);
+		//osd.openPanel();
+		//osd.printf("%cWaiting", 0xcc);  //landing
+		//osd.closePanel();
+
+		osd.setPanel(1, 7);
+		osd.openPanel();
+		osd.printf("olat%3.6f", latoffset);  //return
+		osd.closePanel();
+
+		osd.setPanel(1, 8);
+		osd.openPanel();
+		osd.printf("olon%3.6f",lonoffset);  //landing
+		osd.closePanel();
+
+		osd.setPanel(1, 9);
+		osd.openPanel();
+		osd.printf("%d", wp_number);  //wpnum
+		osd.closePanel();
+
+	//}
+}
 void panSetup2()
 {
 	unsigned long ms = millis();
@@ -247,7 +313,7 @@ void panSetup2()
 	{
 		osd.clear();
 
-		text_timer = ms + 100;
+		text_timer = ms + 200;
 		//osd.setPanel(1, 1);
 		//osd.openPanel();
 		////char* teststr = "aaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -369,7 +435,7 @@ void panSetup2()
 
 		osd.setPanel(1, 6 + i);
 		osd.openPanel();
-		osd.printf("Modified by xttyyy@126.com");
+		osd.printf("Modified by xttyyy@126.com,ack %d",ack);
 		osd.closePanel();
 /*
 		osd.setPanel(1, 1 + i);

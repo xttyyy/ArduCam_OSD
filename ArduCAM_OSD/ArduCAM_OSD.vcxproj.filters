@@ -53,5 +53,8 @@
     <ClInclude Include="Visual Micro\.ArduCAM_OSD.vsarduino.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="__vm\.ArduCAM_OSD.vsarduino.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
