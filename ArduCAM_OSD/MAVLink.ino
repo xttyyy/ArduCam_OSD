@@ -1,5 +1,6 @@
 #include "../GCS_MAVLink/include/mavlink/v1.0/mavlink_types.h"
 #include "../GCS_MAVLink/include/mavlink/v1.0/ardupilotmega/mavlink.h"
+
 //#include "../GCS_MAVLink/include/mavlink/v1.0/common/common.h"
 //#include "../GCS_MAVLink/include/mavlink/v1.0/ardupilotmega/ardupilotmega.h"
 // true when we have received at least 1 MAVLink packet
@@ -8,6 +9,7 @@ static uint8_t crlf_count = 0;
 
 static int packet_drops = 0;
 static int parse_error = 0;
+
 
 void request_mavlink_rates()
 {
@@ -25,155 +27,166 @@ void request_mavlink_rates()
             MAVStreams[i], MAVRates[i], 1);
 
     }
-	for (int i = 0; i < maxStreams; i++) {
-		mavlink_msg_request_data_stream_send(MAVLINK_COMM_0,
-			apm_mav_system, apm_mav_component,
-			MAVStreams[i], MAVRates[i], 1);
+	//for (int i = 0; i < maxStreams; i++) {
+	//	mavlink_msg_request_data_stream_send(MAVLINK_COMM_0,
+	//		apm_mav_system, apm_mav_component,
+	//		MAVStreams[i], MAVRates[i], 1);
 
-		/*Bitmask to indicate which dimensions should be ignored by the vehicle(a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored).
-		Mapping: bit 1 : x, bit 2 : y, bit 3 : z, bit 4 : vx, bit 5 : vy, bit 6 : vz, 
-				 bit 7 : ax, bit 8 : ay, bit 9 : az, bit 10 : is force setpoint, bit 11 : yaw, bit 12 : yaw rate.*/
-		mavlink_msg_set_position_target_local_ned_send(MAVLINK_COMM_0, 963497464, apm_mav_system, apm_mav_component,
-			MAV_FRAME_LOCAL_NED, 4088/*0b0000111111111000*/, -100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	}
+	//	/*Bitmask to indicate which dimensions should be ignored by the vehicle(a value of 0b0000000000000000 or 0b0000001000000000 indicates that none of the setpoint dimensions should be ignored).
+	//	Mapping: bit 1 : x, bit 2 : y, bit 3 : z, bit 4 : vx, bit 5 : vy, bit 6 : vz, 
+	//			 bit 7 : ax, bit 8 : ay, bit 9 : az, bit 10 : is force setpoint, bit 11 : yaw, bit 12 : yaw rate.*/
+	//	mavlink_msg_set_position_target_local_ned_send(MAVLINK_COMM_0, 963497464, apm_mav_system, apm_mav_component,
+	//		MAV_FRAME_LOCAL_NED, 4088/*0b0000111111111000*/, -100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	//}
 
 	
 }
-void calScaleLongDown()
-{
-	scaleLongDown = cosf(osd_lat * DEG_TO_RAD);
-	if (scaleLongDown > 1.0f)
-		scaleLongDown = 1.0f;
-	if (scaleLongDown < 0.01f)
-		scaleLongDown = 0.01f;
-
-}
-void refreshDistance()
-{
-	float latd = (target_lat+latoffset - osd_lat) * LATLON_TO_CM;
-	float lond = (target_lon +lonoffset- osd_lon) * LATLON_TO_CM * scaleLongDown;
-	distance =sqrtf(latd*latd + lond*lond);
-	//alt_above_origin
-}
+//void calScaleLongDown()
+//{
+//	scaleLongDown = cosf(osd_lat * DEG_TO_RAD);
+//	if (scaleLongDown > 1.0f)
+//		scaleLongDown = 1.0f;
+//	if (scaleLongDown < 0.01f)
+//		scaleLongDown = 0.01f;
+//
+//}
+//void refreshDistance()
+//{
+//	float latd = (target_lat+latoffset - osd_lat) * LATLON_TO_CM;
+//	float lond = (target_lon +lonoffset- osd_lon) * LATLON_TO_CM * scaleLongDown;
+//	distance =sqrtf(latd*latd + lond*lond);
+//	//alt_above_origin
+//}
 void DoMission(int idx)
 {
-	ack = 100;
-	for(int i = 0; i < 10;i++)
-	{
 
-		rebuildmissions();
-		sendmissionrequest(0, 1);
-
-		mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
-			0,                             //seq
-			(uint8_t)MAV_FRAME_GLOBAL,
-			(uint8_t)MAV_CMD_NAV_TAKEOFF,   //command
-			1,							   //current
-			1,							   //autocontinue
-			1,                             //param1
-			0,                             //p2
-			0,                             //p3
-			0,                             //p4
-			0,                            //x
-			0,                        //y
-
-			10
-			);
-		mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
-			1,                             //seq
-			(uint8_t)MAV_FRAME_GLOBAL,
-			(uint8_t)MAV_CMD_NAV_TAKEOFF,   //command
-			1,							   //current
-			1,							   //autocontinue
-			1,                             //param1
-			0,                             //p2
-			0,                             //p3
-			0,                             //p4
-			0,                            //x
-			0,                        //y
-
-			10
-			);
-
-		mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
-			2,                             //seq
-			(uint8_t)MAV_FRAME_GLOBAL,
-			(uint8_t)MAV_CMD_NAV_WAYPOINT,   //command
-			0,							   //current
-			1,							   //autocontinue
-			3,                             //param1
-			0,                             //p2
-			0,                             //p3
-			0,                             //p4
-			target_lat + latoffset,                            //x
-			target_lon + lonoffset,                        //y
-
-			10
-			);
-
-		mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
-			3,                             //seq
-			(uint8_t)MAV_FRAME_GLOBAL,
-			(uint8_t)MAV_CMD_NAV_RETURN_TO_LAUNCH,   //command
-			0,							   //current
-			1,							   //autocontinue
-			5,                             //param1
-			0,                             //p2
-			0,                             //p3
-			0,                             //p4
-			0,                            //x
-			0,                        //y
-
-			0
-			);
-		mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
-			4,                             //seq
-			(uint8_t)MAV_FRAME_GLOBAL,
-			(uint8_t)MAV_CMD_NAV_LAND,   //command
-			0,							   //current
-			1,							   //autocontinue
-			0,                             //param1
-			0,                             //p2
-			0,                             //p3
-			0,                             //p4
-			0,                            //x
-			0,                        //y
-
-			0
-			);
-	}
-	return;
+	//float offsetlat = degrees(northDis / (RADIUS_OF_EARTH*cosf(radians(target_lat)))) + target_lat.
 	switch (idx)
 	{
 	case 0:
-		rebuildmissions();
+		rebuildmissions(); 
 		break;
 	case 1:
-		
-		mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
-			0,                             //seq
-			(uint8_t)MAV_FRAME_GLOBAL,
-			(uint8_t)MAV_CMD_NAV_TAKEOFF,   //command
-			1,							   //current
-			1,							   //autocontinue
-			0,                             //param1
-			0,                             //p2
-			0,                             //p3
-			0,                             //p4
-			0,                             //x
-			0,                             //y
-			10.0f
-			);
+		rebuildmissions();
+		rebuildmissions();
+		sendmissionrequest(0, 1);
+		sendmissionrequest(0, 1);
+		ack = 100;
+		for (int i = 0; i < 10; i++)
+		{
+			mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
+				0,                             //seq
+				(uint8_t)MAV_FRAME_GLOBAL,
+				(uint8_t)MAV_CMD_NAV_TAKEOFF,   //command
+				1,							   //current
+				1,							   //autocontinue
+				1,                             //param1
+				0,                             //p2
+				0,                             //p3
+				0,                             //p4
+				0,                            //x
+				0,                        //y
+
+				10
+				);
+			mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
+				1,                             //seq
+				(uint8_t)MAV_FRAME_GLOBAL, 
+				(uint8_t)MAV_CMD_NAV_TAKEOFF,   //command
+				1,							   //current
+				1,							   //autocontinue
+				1,                             //param1
+				0,                             //p2
+				0,                             //p3
+				0,                             //p4
+				0,                            //x
+				0,                        //y
+
+				10
+				);
+
+			mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
+				2,                             //seq
+				(uint8_t)MAV_FRAME_GLOBAL,
+				(uint8_t)MAV_CMD_NAV_WAYPOINT,   //command
+				0,							   //current
+				1,							   //autocontinue
+				3,                             //param1
+				0,                             //p2
+				0,                             //p3
+				0,                             //p4
+				target_lat + latoffset,                            //x
+				target_lon + lonoffset,                        //y
+
+				10
+				);
+
+			mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
+				3,                             //seq
+				(uint8_t)MAV_FRAME_GLOBAL,
+				(uint8_t)MAV_CMD_NAV_RETURN_TO_LAUNCH,   //command
+				0,							   //current
+				1,							   //autocontinue
+				5,                             //param1
+				0,                             //p2
+				0,                             //p3
+				0,                             //p4
+				0,                            //x
+				0,                        //y
+
+				0
+				);
+			mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,
+				4,                             //seq
+				(uint8_t)MAV_FRAME_GLOBAL,
+				(uint8_t)MAV_CMD_NAV_LAND,   //command
+				0,							   //current
+				1,							   //autocontinue
+				0,                             //param1
+				0,                             //p2
+				0,                             //p3
+				0,                             //p4
+				0,                            //x
+				0,                        //y
+
+				0
+				);
+		}
 		break;
 	case 2:
+		mavlink_msg_command_long_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component, 183, 0, 9.0f, 1200, 0, 0, 0, 0, 0);
 		break;
 	case 3:
+		mavlink_msg_command_long_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component, 183, 0, 9.0f, 1700, 0, 0, 0, 0, 0);
 		break;
 	case 4:
 		break;
 	default:
 		break;
 	}
+}
+
+float GetParam(int idx ,const char * name)
+{
+	mavlink_msg_param_request_read_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component, name, idx);
+	mavlink_message_t msg;
+	mavlink_status_t status;
+	int retrys = 5;
+	unsigned long start = millis();
+	while (retrys>=0)
+	{
+		if (!(start + 700 > millis()))
+			return INVALIDFLOAT;
+		
+
+		if (readPacket(&msg, &status))
+		{
+			if (msg.msgid == MAVLINK_MSG_ID_PARAM_VALUE)
+				return mavlink_msg_param_value_get_param_value(&msg);
+			retrys--;
+		}
+	}
+	return INVALIDFLOAT;
 }
 
 void SetCurrent(int idx)
@@ -192,10 +205,9 @@ void rebuildmissions()
 	//mavlink_msg_mission_item_send(MAVLINK_COMM_0, apm_mav_system, apm_mav_component,)
 }
 
+uint8_t readPacket(mavlink_message_t* msg, mavlink_status_t* status)
+{
 
-void read_mavlink(){
-	mavlink_message_t msg;
-	mavlink_status_t status;
 
 	//grabing data 
 	while (Serial.available() > 0) {
@@ -216,7 +228,21 @@ void read_mavlink(){
 		}
 
 		//trying to grab msg  
-		if (mavlink_parse_char(MAVLINK_COMM_0, c, &msg, &status)) {
+		if (mavlink_parse_char(MAVLINK_COMM_0, c, msg, status)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+void read_mavlink(){
+	mavlink_message_t msg;
+	mavlink_status_t status;
+
+
+		
+
+		//trying to grab msg  
+		if (readPacket(&msg, &status)) {
 			mavlink_active = 1;
 			//handle msg
 			switch (msg.msgid) {
@@ -261,11 +287,11 @@ void read_mavlink(){
 												   osd_fix_type = mavlink_msg_gps_raw_int_get_fix_type(&msg);
 												   osd_satellites_visible = mavlink_msg_gps_raw_int_get_satellites_visible(&msg);
 
-												   if (scaleLongDownCaled == 0)
+												   /*if (scaleLongDownCaled == 0)
 												   {
 													   calScaleLongDown();
 													   scaleLongDownCaled = 1;
-												   }
+												   }*/
 											   }
 											   else
 											   {
@@ -273,11 +299,11 @@ void read_mavlink(){
 												   {
 													   target_lat = mavlink_msg_gps_raw_int_get_lat(&msg) / 10000000.0f;
 													   target_lon = mavlink_msg_gps_raw_int_get_lon(&msg) / 10000000.0f;
-													   target_alt = mavlink_msg_gps_raw_int_get_alt(&msg) / 1000.0f;
+													   target_alt = mavlink_msg_gps_raw_int_get_alt(&msg);
 													   target_satellites_visible = mavlink_msg_gps_raw_int_get_satellites_visible(&msg);
 												   }
 											   }
-											   refreshDistance();
+											   //refreshDistance();
 
 			}
 				break;
@@ -345,6 +371,14 @@ void read_mavlink(){
 									ack=		   mavlink_msg_mission_ack_get_type(&msg);
 			}
 				break;
+
+			case  MAVLINK_MSG_ID_PARAM_VALUE:
+				{
+					//gotparam = 128;
+					//paramvalue = mavlink_msg_param_value_get_param_value(&msg);
+
+				}
+				break;
 			default:
 				//Do nothing
 				break;
@@ -352,7 +386,7 @@ void read_mavlink(){
 		}
 		delayMicroseconds(138);
 		//next one
-	}
+//	}
 	// Update global packet drops counter
 	packet_drops += status.packet_rx_drop_count;
 	parse_error += status.parse_error;

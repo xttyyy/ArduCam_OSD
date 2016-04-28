@@ -205,3 +205,5 @@ static uint8_t c_configuring = 0;
 static uint8_t c_getchan1middle = 0;
 static uint8_t c_getchan2middle = 0;
 
+uint8_t gotparam = 0;
+float paramvalue = 0;

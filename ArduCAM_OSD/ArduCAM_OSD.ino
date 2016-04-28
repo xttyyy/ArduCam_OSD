@@ -88,11 +88,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 #define TELEMETRY_SPEED  57600  // How fast our MAVLink telemetry is coming to Serial port
 #define BOOTTIME         2000   // Time in milliseconds that we show boot loading bar and wait user input
 
-#define M_PI      3.141592653589793f
-#define DEG_TO_RAD      (M_PI / 180.0f)
-#define LATLON_TO_M     111319.5f
-#define LATLON_TO_CM    11131950.0f
+//#define M_PI      3.141592653589793f
+//#define DEG_TO_RAD      (M_PI / 180.0f)
+//#define LATLON_TO_M     111319.5f
+//#define LATLON_TO_CM    11131950.0f
+//
 
+
+#define INVALIDFLOAT 1.2345f
 
 // Objects and Serial definitions
 FastSerialPort0(Serial);
@@ -216,8 +219,48 @@ char rowDeeps = -1;
 char parrent = -1;
 int currentValue = 0;
 int newValue = 0;
+
+int oldchannel7 = 0;
+
+float avalues[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 void onRCInput()
 {
+
+	if (oldchannel7 == 0)
+		oldchannel7 = osd_chan7_raw;
+	if (osd_chan7_raw > 1700 && oldchannel7<1300)
+	{
+		////c_last_chan1_move_time = ms;
+		//if (c_chan1_middle - chan1_raw > 300)
+		//	c_chan1_rev = -1;
+		//parrent = -1;
+		//c_configuring = 1;
+		//osd.clear();
+		//menuDeeps = 0;
+		//rowDeeps = 0;
+		gotparam = 100;
+		/*avalues[0] = GetParam(-1, "FLTMODE1");
+		avalues[1] = GetParam(-1, "FLTMODE2");
+		avalues[2] = GetParam(-1, "FLTMODE3");
+		avalues[3] = GetParam(-1, "FLTMODE4");
+		avalues[4] = GetParam(-1, "FLTMODE5");
+		avalues[5] = GetParam(-1, "FLTMODE6");*/
+		DoMission(2);
+		
+	}
+	if (osd_chan7_raw < 1300 && oldchannel7>1700)
+	{
+		/*menuDeeps = 0;
+		rowDeeps = 0;
+		c_configuring = 0;
+		c_last_chan1_move_time = 0;
+		osd.clear();*/
+		DoMission(3);
+		gotparam = 0;
+		paramvalue = 0;
+	}
+	oldchannel7 = osd_chan7_raw;
+	
 	
 	if (c_getchan1middle == 0 && c_chan1_middle == 10000 && chan1_raw>1200)
 	{
@@ -265,7 +308,7 @@ void onRCInput()
 			if(gpslocked == 0)
 			{
 				gpslocked = 1;
-				DoMission(0);//mission
+				DoMission(2);//mission
 			}
 		}
 		else
@@ -273,10 +316,11 @@ void onRCInput()
 			if (gpslocked == 1)
 			{
 				gpslocked = 0;
+				DoMission(3);//mission
 			}
 		}
 
-		if (osd_chan7_raw > 1700)
+		/*if (osd_chan7_raw > 1700)
 		{
 			if (gpsoffsetinit == 0)
 			{
@@ -293,7 +337,7 @@ void onRCInput()
 				latoffset = 0;
 				lonoffset = 0;
 			}
-		}
+		}*/
 		
 	}
 	else
@@ -312,11 +356,29 @@ void onRCInput()
 			{
 				////load(parrent,rowDeeps)
 				//currentValue = values[parrent][rowDeeps];
-				newValue = currentValue;
+
+				//int num = EEPROM.read(220);
+				//int idx = 221 + num + num * 8;
+				//int paranum = EEPROM.read(221 + parrent);
+				//for (int n = 0; n < parrent; n++)
+				//	idx += EEPROM.read(221 + n) * 10;
+
+
+				////i = 2;
+
+				//for (int i = 0; i < paranum; i++)
+				//{
+				//	char words[9] = "aaaaaaaa";
+				//	for (int j = 0; j < 8; j++)
+				//		words[j] = EEPROM.read(idx + i * 10 + j);
+
+				//	avalues[i] = GetParam(-1, words);
+				//}
+
 			}
 			else if (menuDeeps >= 3)
 			{
-				if (parrent!=-1)
+				if (parrent != -1)
 					newValue = currentValue;
 				menuDeeps = 2;
 			}
@@ -374,12 +436,12 @@ void onRCInput()
 			{
 				newValue -= 1;// minUnit[parrent][rowDeeps];
 				
-				DoMission(rowDeeps);
+				DoMission(1);
 			}
 			if (yshift < -300)
 			{
 				newValue += 1;// minUnit[parrent][rowDeeps];
-				DoMission(rowDeeps);
+				DoMission(1);
 				
 			}
 			

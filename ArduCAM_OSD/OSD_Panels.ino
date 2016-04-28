@@ -261,25 +261,25 @@ void panProgress()
 
 		osd.setPanel(1, 1);
 		osd.openPanel();
-		osd.printf("%c%c%3.6f| %c%3.6f |l%d,o%d", 0xbc, 0x84, target_lon, 0x83, target_lat,gpslocked,gpsoffsetinit);  //waiting target
-		osd.closePanel();
-
-		osd.setPanel(1, 4);
-		osd.openPanel();
-		osd.printf("%cFinish", 0xbd);   //takeoff
+		osd.printf("%c%c%3.6f| %c%3.6f |alt:%3.1f,halt:%3.1f|l%d,o%d", 0xbc, 0x84, target_lon, 0x83, target_lat, target_alt, osd_home_alt, gpslocked, gpsoffsetinit);  //waiting target
 		osd.closePanel();
 
 		osd.setPanel(1, 5);
 		osd.openPanel();
-		osd.printf("%c%d/%d", 0xbe, desalt , 100);  //climbing
+		osd.printf("%cFinish", 0xbd);   //takeoff
 		osd.closePanel();
 
 		osd.setPanel(1, 6);
 		osd.openPanel();
+		osd.printf("%c%d/%d", 0xbe, desalt , 100);  //climbing
+		osd.closePanel();
+
+		osd.setPanel(1, 7);
+		osd.openPanel();
 		osd.printf("%c%d/%d", 0xcb,100,distance);  //moving
 		osd.closePanel();
 
-		//osd.setPanel(1, 7);
+		//osd.setPanel(1, 8);
 		//osd.openPanel();
 		//osd.printf("%cWaiting", 0xcd);  //return
 		//osd.closePanel();
@@ -289,25 +289,33 @@ void panProgress()
 		//osd.printf("%cWaiting", 0xcc);  //landing
 		//osd.closePanel();
 
-		osd.setPanel(1, 7);
+		osd.setPanel(1, 8);
 		osd.openPanel();
 		osd.printf("olat%3.6f", latoffset);  //return
 		osd.closePanel();
 
-		osd.setPanel(1, 8);
+		osd.setPanel(1, 9);
 		osd.openPanel();
 		osd.printf("olon%3.6f",lonoffset);  //landing
 		osd.closePanel();
 
-		osd.setPanel(1, 9);
+		osd.setPanel(1, 10);
 		osd.openPanel();
 		osd.printf("%d", wp_number);  //wpnum
 		osd.closePanel();
 
+		osd.setPanel(1, 11);
+		osd.openPanel();
+		osd.printf("%d,,r%f", gotparam,paramvalue);  //wpnum
+		osd.closePanel();
+
 	//}
 }
+
+static float values[10];
 void panSetup2()
 {
+
 	unsigned long ms = millis();
 	if (ms > text_timer)
 	{
@@ -404,7 +412,7 @@ void panSetup2()
 					value = newValue;
 					rowhead = '\xbb';
 				}
-				osd.printf("%c%5i", rowhead, value);
+				osd.printf("%c%f", rowhead, avalues[i]);
 				osd.closePanel();
 			}
 

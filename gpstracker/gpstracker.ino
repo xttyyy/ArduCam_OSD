@@ -1,4 +1,4 @@
-
+                                               
 #include <SoftwareSerial.h>
 //#include <FastSerial.h>
 #include "Arduino.h"
@@ -14,9 +14,15 @@
 
 #define GPRMC_TERM "$GPRMC,"    //定义要解析的指令，因为这条指令包含定位和时间信息
 #define IVALIDLOCATION 990000000
+#define IVALIDALT 9999
 char nmeaSentence[68];
 String latitude;    //纬度
 String longitude;   //经度
+String altitude; //altitude
+
+String tmplat;
+String tmplon;
+String tmpalt;
 String lndSpeed;    //速度
 String gpsTime;     //UTC时间，本初子午线经度0度的时间，和北京时间差8小时
 String beiJingTime;   //北京时间
@@ -31,7 +37,7 @@ static boolean      enable_mav_request = 0;
 
 
 
-// software serial #1: TX = digital pin 10, RX = digital pin 11
+// software serial #1: RX = digital pin 10, TX = digital pin 11
 SoftwareSerial portOne(10, 11);
 
 
@@ -51,6 +57,8 @@ void loop() {
 
 	int32_t lat = IVALIDLOCATION;
 	int32_t lon = IVALIDLOCATION;
+	float alt = IVALIDALT;
+
 	//Serial.println("Hello World!");
 
 	// put your main code here, to run repeatedly:
@@ -93,36 +101,42 @@ void loop() {
 			case '$':         //若是$，则说明是一帧数据的开始
 				portOne.readBytesUntil('*', nmeaSentence, 67);   //读取接下来的数据，存放在nmeaSentence字符数组中，最大存放67个字节
 				//Serial.println(nmeaSentence);
-				latitude = parseGprmcLat(nmeaSentence); //获取纬度值
-				longitude = parseGprmcLon(nmeaSentence);//获取经度值
-				lndSpeed = parseGprmcSpeed(nmeaSentence);//获取速度值
-				gpsTime = parseGprmcTime(nmeaSentence);//获取GPS时间
+				tmplat = parseGprmcLat(nmeaSentence); //获取纬度值
+				tmplon = parseGprmcLon(nmeaSentence);//获取经度值
+				tmpalt = parseGnggaAlt(nmeaSentence);//get alt
+				
 
 
-				if (latitude > "")   //当不是空时候打印输出
+				if (tmplat > "")   //当不是空时候打印输出
 				{
 					//Serial.println("------------------------------------");
 					//Serial.println("latitude: " + latitude);
-					lat = StringToInt(latitude);
+					//lat = StringToInt(latitude);
+					latitude = tmplat;
 				}
 
-				if (longitude > "")    //当不是空时候打印输出
+				if (tmplon > "")    //当不是空时候打印输出
 				{
 					//Serial.println("longitude: " + longitude);
-					lon = StringToInt(longitude);
+					//lon = StringToInt(longitude);
+					longitude = tmplon;
 				}
 
-				if (lndSpeed > "")   //当不是空时候打印输出
+				if (tmpalt > "")
 				{
-					//Serial.println("Speed (knots): " + lndSpeed);
+					altitude = tmpalt;
 				}
+				//if (lndSpeed > "")   //当不是空时候打印输出
+				//{
+				//	//Serial.println("Speed (knots): " + lndSpeed);
+				//}
 
-				if (gpsTime > "")    //当不是空时候打印输出
-				{
-					//Serial.println("gpsTime: " + gpsTime);
-					beiJingTime = getBeiJingTime(gpsTime);  //获取北京时间 
-					//Serial.println("beiJingTime: " + beiJingTime);
-				}
+				//if (gpsTime > "")    //当不是空时候打印输出
+				//{
+				//	//Serial.println("gpsTime: " + gpsTime);
+				//	beiJingTime = getBeiJingTime(gpsTime);  //获取北京时间 
+				//	//Serial.println("beiJingTime: " + beiJingTime);
+				//}
 
 			}
 		}
@@ -132,19 +146,25 @@ void loop() {
 	unsigned long m = millis();
 	if (lastsendgps + 2000 < m)  
 	{
-		if (latitude > ""&& longitude > "")   //当不是空时候打印输出
+		if (latitude > ""&& longitude > "" && altitude > "")   //当不是空时候打印输出
 		{
 
 			lat = StringToInt(latitude);
 			lon = StringToInt(longitude);
+			alt = altitude.toFloat();
 		}
-   //Serial.println("latitude: " + latitude);
-		//Serial.println(lat);
 
-    //Serial.println("longitude: " + longitude);
-    //Serial.println(lon);
-		mavlink_msg_gps_raw_int_send(MAVLINK_COMM_0, 963497464, 3, lat, lon, 0, 1, 1, 1, 1, 255);
-		lastsendgps = m;
+	//	Serial.print(lat,DEC);
+	//	Serial.print(",");
+
+ //   Serial.print(lon,DEC);
+	//Serial.print(",");
+
+	//Serial.print(alt, DEC);
+	//Serial.println();
+
+		mavlink_msg_gps_raw_int_send(MAVLINK_COMM_0, 963497464, 3, lat, lon, alt, 1, 1, 1, 1, 255);
+	lastsendgps = millis();
 
 	}
 	
@@ -152,6 +172,7 @@ void loop() {
 
 int32_t StringToInt(String s)
 {
+  //Serial.println("string to parse = "+s);
 	int32_t num = IVALIDLOCATION;
 	int pLoc = 0;
 	int endloc  = s.indexOf('.', pLoc+1);
@@ -162,17 +183,29 @@ int32_t StringToInt(String s)
 
 	pLoc = endloc + 1;
 	endloc = s.indexOf(' ', pLoc + 1);
+  //Serial.println("startloc = ,endloc =");
 	if (endloc < pLoc + 1 || endloc >= s.length())
 		return 970000000;
 	String sb = s.substring(pLoc, endloc);
-
+	//Serial.println(sa+" "+sb);
 	if (endloc + 1 >= s.length())
 		return 960000000;
+
 	char c = s[endloc+1];
 
-	int32_t a = sa.toInt();
-	int32_t b = sb.toInt();
-	num = a * 100000 + b;
+	String saa = sa.substring(0, sa.length() - 2);
+	String sab = sa.substring(sa.length() - 2);
+
+	sb = sab + sb;
+
+  //Serial.println(saa+" "+sb);
+	int32_t a = saa.toInt();
+	int32_t b = 10 *sb.toInt() / 6;
+
+ //Serial.println("a and b is");
+ //Serial.println(a,DEC);
+ //Serial.println(b,DEC);
+	num = a * 10000000 + b;
 
 	if (c == 'w' || c == 's'||c == 'W' || c == 'S')
 		num = -num;
@@ -192,6 +225,37 @@ String getBeiJingTime(String s)
   return s;
 }
 
+//Parse GNGGA NMEA sentence data from String
+//String must be GNGGA or no data will be parsed
+//Return Alt
+String parseGnggaAlt(String s)
+{
+	int pLoc = 0; //paramater location pointer
+	int lEndLoc = 0; //alt parameter end location
+	int dEndLoc = 0; //direction parameter end location
+	String alt;
+	String tmpstr = s.substring(0, 4);
+	if (tmpstr == "GNGG")
+	{
+		//Serial.println(s);
+		for (int i = 0; i < 10; i++)
+		{
+			if (i < 9)
+			{
+				pLoc = s.indexOf(',', pLoc + 1);
+
+			}
+			if (i == 9)
+			{
+				lEndLoc = s.indexOf(',', pLoc + 1);
+				alt = s.substring(pLoc + 1, lEndLoc);
+			}
+		}
+		
+	}
+	return alt;
+}
+
 //Parse GPRMC NMEA sentence data from String
 //String must be GPRMC or no data will be parsed
 //Return Latitude
@@ -204,7 +268,8 @@ String parseGprmcLat(String s)
   /*make sure that we are parsing the GPRMC string. 
    Found that setting s.substring(0,5) == "GPRMC" caused a FALSE.
    There seemed to be a 0x0D and 0x00 character at the end. */
-  if(s.substring(0,4) == "GPRM")
+  String tmpstr = s.substring(0, 4);
+  if (tmpstr == "GPRM" || tmpstr == "GNRM")
   {
     //Serial.println(s);
     for(int i = 0; i < 5; i++)
@@ -255,7 +320,8 @@ String parseGprmcLon(String s)
   /*make sure that we are parsing the GPRMC string. 
    Found that setting s.substring(0,5) == "GPRMC" caused a FALSE.
    There seemed to be a 0x0D and 0x00 character at the end. */
-  if(s.substring(0,4) == "GPRM")
+  String tmpstr = s.substring(0, 4);
+  if (tmpstr == "GPRM" || tmpstr == "GNRM")
   {
     //Serial.println(s);
     for(int i = 0; i < 7; i++)
